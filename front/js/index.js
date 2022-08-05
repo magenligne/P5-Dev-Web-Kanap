@@ -17,12 +17,15 @@ let myPromise = fetch("http://localhost:3000/api/products");
     .then(listProductJson=>{
         // console.log(listProductJson);
         for (let ProductJson of listProductJson) {
+            // console.log(ProductJson);
+
             let canapeLocal = new canape(ProductJson);
-            document.querySelector(".items").innerHTML+=` <a href="./product.html?id=42">
+            // console.log(canapeLocal);
+            document.querySelector(".items").innerHTML+=` <a href="#">
             <article>
-              <img src=".../product01.jpg" alt="Lorem ipsum dolor sit amet, Kanap name1">
-              <h3 class="productName">Kanap name1</h3>
-              <p class="productDescription">Dis enim malesuada risus sapien gravida nulla nisl arcu. Dis enim malesuada risus sapien gravida nulla nisl arcu.</p>
+              <img src=${canapeLocal.imageUrl} alt=${canapeLocal.altTxt}>
+              <h3 class="productName">"${canapeLocal.name}"</h3>
+              <p class="productDescription">${canapeLocal.description}</p>
             </article>
           </a> `
         }
