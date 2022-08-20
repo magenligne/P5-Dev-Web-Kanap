@@ -10,7 +10,7 @@ function recupPanier() {
     return JSON.parse(panierRecup); //on recupere un tableau d'objet JS ex: indice 0 {Id,qte,couleur}
   }
 }
-// function supprimeArticle(article) {
+// function supprimeArticle(article) {//article est un objet { id, qte, color } du LS
 //   let panierSup = recupPanier();
 //   panierSup = panierSup.filter((itemPanier) => (itemPanier.Id = !article.Id));
 //   savePanier(panierSup);
@@ -29,10 +29,22 @@ else{
 PanierA.push({ id, qte, color });
 }
 savePanier(PanierA);
+
+}
+function qteTotale(){
+  let panier=recupPanier();
+  let qteTotale=0;
+  for(let article of panier){
+    qteTotale+=parseInt(article.qte,10);
+  }
+  // console.log(qteTotale) ;
+    document.querySelector("#totalQuantity").innerText=qteTotale;
 }
 
 function affichePanier() {
   let Panier = recupPanier();
+  let prixTotal=0;
+// let qteTotale=0;
   for (let idQteColor of Panier) {
     //pour chaque article du panier:
     //on recupere chaque objet à afficher au panier dans l'api à partir de son id:
@@ -69,14 +81,25 @@ function affichePanier() {
     </div>
   </div>
 </article>`;
-      })
+prixTotal+=(ProductJson.price*parseInt(idQteColor.qte,10));
+  document.querySelector("#totalPrice").innerText= prixTotal;
+// console.log(prixTotal);//ok
+})
       .catch((error) => {
         console.log(error);
       });
   }
+
 }
 window.addEventListener("load", affichePanier());//on appelle la fonction à s'exécuter au chargement de la page panier
+window.addEventListener("load", qteTotale());//on appelle la fonction à s'exécuter au chargement de la page panier
 
+
+// let supprimer = document.getElementsByClassName('deleteItem');//on recupere le pointage du BOUTON dans le DOM de cart.html dans une variable
+// supprimer.addEventListener('click',() =>{
+//   //il faudra recuperer l'objet{id,qte,color} à supprimer ds le LS et supprimer le html correspondant dans le dom
+// supprimeArticle();
+// },false);
 
 // for( let i = 0; i < localStorage.length; i++){
 //     localStorage.key(i);
