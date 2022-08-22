@@ -31,19 +31,14 @@ PanierA.push({ id, qte, color });
 savePanier(PanierA);
 
 }
-function qteTotale(){
-  let panier=recupPanier();
-  let qteTotale=0;
-  for(let article of panier){
-    qteTotale+=parseInt(article.qte,10);
-  }
-  // console.log(qteTotale) ;
-    document.querySelector("#totalQuantity").innerText=qteTotale;
-}
+// function qteTotale(){
+//   let panier=recupPanier();
 
 function affichePanier() {
   let Panier = recupPanier();
   let prixTotal=0;
+  let qteTotale=0;
+
 // let qteTotale=0;
   for (let idQteColor of Panier) {
     //pour chaque article du panier:
@@ -81,6 +76,13 @@ function affichePanier() {
     </div>
   </div>
 </article>`;
+for(let article of Panier){
+  qteTotale+=parseInt(article.qte,10);
+}
+// console.log(qteTotale) ;
+  document.querySelector("#totalQuantity").innerText=qteTotale;
+
+
 prixTotal+=(ProductJson.price*parseInt(idQteColor.qte,10));
   document.querySelector("#totalPrice").innerText= prixTotal;
 // console.log(prixTotal);//ok
@@ -92,7 +94,7 @@ prixTotal+=(ProductJson.price*parseInt(idQteColor.qte,10));
 
 }
 window.addEventListener("load", affichePanier());//on appelle la fonction à s'exécuter au chargement de la page panier
-window.addEventListener("load", qteTotale());//on appelle la fonction à s'exécuter au chargement de la page panier
+// window.addEventListener("load", qteTotale());//on appelle la fonction à s'exécuter au chargement de la page panier
 
 
 // let supprimer = document.getElementsByClassName('deleteItem');//on recupere le pointage du BOUTON dans le DOM de cart.html dans une variable
