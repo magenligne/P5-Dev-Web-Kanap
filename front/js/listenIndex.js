@@ -50,10 +50,11 @@ let searchId = new URLSearchParams(window.location.search); //URL.search corresp
 let canapId = searchId.get("id");
 let buttonAjoutPanier = document.getElementById('addToCart');//on recupere le pointage du BOUTON dans le DOM de cart.html dans une variable
 buttonAjoutPanier.addEventListener('click',() =>{
-//     //récup de la quantité:
+//     //récup de la quantité DOM:
     let quantity=document.getElementById("quantity").value;
-// //récup de la couleur:
+// //récup de la couleur DOM:
     let color=document.getElementById("colors").value;
+    //Ajout de l'objet {id,qte,color} au LS via la fonction ajoutAuPanier:
     let monAjout={id:canapId, qte:quantity,color};//objet js au format Json SANS guillemet permis car on est en JS
     ajoutAuPanier(monAjout);
 window.location="cart.html";
