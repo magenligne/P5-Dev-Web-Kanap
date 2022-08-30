@@ -2,6 +2,7 @@ function savePanier(Panier) {
   //Panier est un tableau d'objet JS au format txt ex: indice 0 {Id,qte,couleur}
   localStorage.setItem("monPanier", JSON.stringify(Panier)); //on sauve un Panier txt
 }
+//LS:CETTE FONCTION TRANSFORME LE PANIER ACTUEL EN TABLEAU D OBJET JS
 function recupPanier() {
   let panierRecup = localStorage.getItem("monPanier"); //panierRecup est un txt
   if (panierRecup == null) {
@@ -10,7 +11,7 @@ function recupPanier() {
     return JSON.parse(panierRecup); //on recupere un tableau d'objet JS ex: indice 0 {Id,qte,couleur}
   }
 }
-
+//LS:CETTE FONCTION AJOUTE L ARTICLE CLICKER DANS LE LS, SAUF S IL EXISTE DEJA, LA FONCTION MET A JOUR SA QUANTITE
 export function ajoutAuPanier({ id, qte, color }) {
   // 1 arg objet  avec 3 propriété
   // console.log(id);//ok
@@ -24,12 +25,11 @@ export function ajoutAuPanier({ id, qte, color }) {
   }
   savePanier(PanierA);
 }
-
+//DANS CETTE FONCTION, POUR CHAQUE OBJET DU PANIER, ON CREER UN ARTICLE DANS LE DOM POUR L AFFICHER, ON ECOUTE LE CLICK SUR SUPPRIMER ET LA MODIF DE QUANTITE ET ON LES GERE.
 function affichePanier() {
   let Panier = recupPanier();
   let prixTotal = 0;
   let qteTotale = 0;
-
   for (let idQteColor of Panier) {
     //pour chaque article du panier:
     //on recupere chaque objet à afficher au panier dans l'api à partir de son id:
@@ -43,6 +43,7 @@ function affichePanier() {
         }
       })
       .then((ProductJson) => {
+        //---------------------------------------------------------CREATION D UN ARTICLE DOM (AFFICHAGE)
         let article = document.createElement("article");
         article.setAttribute("class", "cart__item");
         article.setAttribute("data-id", idQteColor.id);
@@ -68,6 +69,7 @@ function affichePanier() {
        </div> `;
         document.querySelector("#cart__items").appendChild(article);
 
+//------------------------------------------------------------CALCUL QUANTITE TOTALE ET PRIX TOTAL
         qteTotale += parseInt(idQteColor.qte, 10);
 
         // console.log(qteTotale) ;
@@ -77,7 +79,7 @@ function affichePanier() {
         document.querySelector("#totalPrice").innerText = prixTotal;
         // console.log(prixTotal);//ok
 
-        //gestion des suppressions:
+        //---------------------------------------------------GESTION DES SUPPRESSIONS
         let supprime = article.querySelector(".deleteItem");
         supprime.addEventListener(
           "click",
@@ -92,7 +94,7 @@ function affichePanier() {
           false
         );
 
-        //gestion des modif de qte:
+        //-----------------------------------------------------GESTION DES MODIF DE QUANTITE
         let quantite = article.querySelector(".itemQuantity");
         quantite.addEventListener(
           "change",
@@ -126,6 +128,7 @@ function affichePanier() {
   console.log(Panier);
 }
 
+//LS:CETTE FONCTION SUPPRIME UNE LIGNE ID/QUANTITE/COULEUR DU LOCALSTORAGE
 function supprimeLigne(idQteColor) {
   let Panier = recupPanier();
   let indexPanier = Panier.findIndex((iqc) => iqc === idQteColor);
@@ -136,6 +139,7 @@ function supprimeLigne(idQteColor) {
   savePanier(Panier);
 }
 
+//LS:CETTE FONCTION TROUVE LA LIGNE A MODIFIER DU LS ET REMPLACE SA QUANTITE PAR LA NOUVELLE
 function modifierQtePanier(idQteColor, newQte) {
   let Panier = recupPanier();
   let articleQuiChange = Panier.find(

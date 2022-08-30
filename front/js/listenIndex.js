@@ -45,6 +45,7 @@ window.addEventListener("load", () => {
   }
 });
 
+//-----------------------------AJOUT AU PANIER-----------------------------------------------------------------------
 //comment sortir les variables searchId et canapId pour éviter la répèt suivante?
 let searchId = new URLSearchParams(window.location.search); //URL.search correspond à la chaine de caractère de l'url à droite du ?
 let canapId = searchId.get("id");
