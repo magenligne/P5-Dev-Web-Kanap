@@ -1,3 +1,6 @@
+import { recupPanier} from "./cart.js";
+
+
 //-------------------------------------------------------ECOUTE VERIFICATION ET RECUPERATION DANS LE LS DU FORMULAIRE
 let formulaire = document.querySelector(".cart__order__form");
 // console.log(formulaire.email.value);
@@ -38,10 +41,20 @@ formulaire.addEventListener(
 
         monContact[nomChamp] = valeurSaisie;
       });
-      // console.log(monContact);//ok
+      console.log(monContact);//ok
       //on stocke l'objet monContact dans un item du localstorage:
-      localStorage.setItem("contact", JSON.stringify(monContact)); //on sauve une version  txt de l'objet
+    //   localStorage.setItem("contact", JSON.stringify(monContact)); //on sauve une version  txt de l'objet
       //dans le LS il y a un objet Panier et un objet contact.
+    //   let numeroCommande=recupNcommande(monContact,localStorage.getItem("monPanier"));
+    let listIDpanier=recupPanier().map((elementPanier)=>{
+return elementPanier.id;
+    });
+console.log(listIDpanier);
+let objetAPI={
+    contact:monContact,
+products:listIDpanier
+}
+recupNcommande(objetAPI);
     }
   },
   false
@@ -51,13 +64,15 @@ formulaire.addEventListener(
 //ELLE AFFUCHE AUSSI UN MESSAGE D ERREUR SI LE CHAMP EST FAUX.
 function validation(champ, saisie) {
   let valid; //deviendra faux si un champ est faux
-  // console.log(champ.type);
+  console.log(champ);
+  console.log(champ.type);
 
-  if (champ.type == "email") {
+
+  if (champ.id == "email") {
     let regExMail = /^[a-z0-9.-_]+[@]{1}[a-z0-9.-_]+[.]{1}[a-z]{2,10}$/i;
     valid = regExMail.test(saisie);
-    console.log(champ.name + " nest pas un txt");
-  } else if (champ.type == "text") {
+    console.log(champ.name + " est de type email");
+  } else {
     let regExTxt = /^[a-z][a-z]+/i;
     valid = regExTxt.test(saisie);
     // console.log(valid);
@@ -70,21 +85,34 @@ function validation(champ, saisie) {
 
   if (valid == false) {
     messageErreur.innerHTML = `Saisie invalide.`;
-    if ((champ.type = "text")) {
-      messageErreur.innerHTML += `Les champs Prénom à Ville ne doivent contenir que des lettres.`;
-    } else if ((champ.type = "email")) {
-      messageErreur.innerHTML += `Le champ Email doit être de type: caractères@caractères.caractères`;
+    if ((champ.id == "email")) {
+        messageErreur.innerHTML += `Le champ Email doit être de type: caractères@caractères.caractères`;
+    } else  {
+        messageErreur.innerHTML += `Les champs Prénom à Ville ne doivent contenir que des lettres.`;
     }
 
     console.log(saisie + "n'est pas valide");
     return valid; //NE MARCHE PAS...
   } else {
-    console.log(saisie + "est valide");
+    console.log(saisie + " est valide");
     return valid;
   }
 }
 
-//FONCTION QUI POSTE UN OBJET CONTACT ET UN TABLEAU DE ID/QTE/COULEUR A L API et recupere un numero de commande
-function recupNcommande(contact,panier){
-    
+//FONCTION QUI POSTE UN OBJET CONTACT ET UN TABLEAU DE ID/QTE/COULEUR les 2 au format JSON(texte) A L API et recupere un numero de commande
+async function recupNcommande(objetAPI){
+    //creation des 2 objets à partir du LS
+// let pannierCommande = recupPanier(panier);
+// let contactCommande=recupPanier(contact);
+let maPromesse= await fetch("http://localhost:3000/api/order", {
+	method: "POST",
+	headers: { 
+// 'Accept': 'application/json', 
+'Content-Type': 'application/json' 
+},
+	body: objetAPI
+});
+let reponse=await maPromesse.json;
+console.log(reponse);
+
 }

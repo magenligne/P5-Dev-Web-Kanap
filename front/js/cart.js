@@ -3,12 +3,12 @@ function savePanier(Panier) {
   localStorage.setItem("monPanier", JSON.stringify(Panier)); //on sauve un Panier txt
 }
 //LS:CETTE FONCTION TRANSFORME LE PANIER ACTUEL EN TABLEAU D OBJET JS
-function recupPanier() {
+export function recupPanier() {
   let panierRecup = localStorage.getItem("monPanier"); //panierRecup est un txt
   if (panierRecup == null) {
     return [];
   } else {
-    return JSON.parse(panierRecup); //on recupere un tableau d'objet JS ex: indice 0 {Id,qte,couleur}
+    return JSON.parse(panierRecup); //on recupere un tableau d'objet JSon ex: indice 0 {Id,qte,couleur}
   }
 }
 //LS:CETTE FONCTION AJOUTE L ARTICLE CLICKER DANS LE LS, SAUF S IL EXISTE DEJA, LA FONCTION MET A JOUR SA QUANTITE

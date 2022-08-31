@@ -1,4 +1,4 @@
-let reponse =await fetch("http://localhost:3000/api/products")
+let reponse =await fetch("http://localhost:3000/api/products");
 
 
 let listProductJson=await reponse.json();
