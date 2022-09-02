@@ -62,7 +62,7 @@ recupNcommande(objetAPI);
 
 //CETTE FONCTION TESTE UN CHAMP.ELLE APPLIQUE LA REGEX SPECIALE SELON LE TYPE DE CHAMP ET RETOURNE TRUE OU FALSE SELON LA VALIDITE DU CHAMP TESTE
 //ELLE AFFUCHE AUSSI UN MESSAGE D ERREUR SI LE CHAMP EST FAUX.
-function validation(champ, saisie) {
+async function validation(champ, saisie) {
   let valid; //deviendra faux si un champ est faux
   console.log(champ);
   console.log(champ.type);
@@ -72,7 +72,12 @@ function validation(champ, saisie) {
     let regExMail = /^[a-z0-9.-_]+[@]{1}[a-z0-9.-_]+[.]{1}[a-z]{2,10}$/i;
     valid = regExMail.test(saisie);
     console.log(champ.name + " est de type email");
-  } else {
+  } else if (champ.id == "address"){
+    let regExAdresse = /^[0-9a-z][0-9a-z,.-]+/i;
+    valid = regExAdresse.test(saisie);
+
+  } 
+  else {
     let regExTxt = /^[a-z][a-z]+/i;
     valid = regExTxt.test(saisie);
     // console.log(valid);
@@ -80,39 +85,55 @@ function validation(champ, saisie) {
   }
 
   console.log(valid); //ok
-  let messageErreur = champ.nextElementSibling;
+  let messageErreur = champ.nextElementSibling;//il s'agit du paragraphe suivant chanque champ
   // console.log(champ.nextElementSibling);
 
   if (valid == false) {
-    messageErreur.innerHTML = `Saisie invalide.`;
-    if ((champ.id == "email")) {
+    messageErreur.innerHTML = `Saisie invalide ou manquante.`;
+    if ((champ.type == "email")) {
         messageErreur.innerHTML += `Le champ Email doit être de type: caractères@caractères.caractères`;
-    } else  {
-        messageErreur.innerHTML += `Les champs Prénom à Ville ne doivent contenir que des lettres.`;
-    }
+    } 
+  else if (champ.id == "address"){
+    messageErreur.innerHTML += `Le champ Adresse ne doit contenir que des lettres, chiffres, ou les catactères ", - ."`;
 
+  } 
+
+    else  {
+        messageErreur.innerHTML += `Les champs Prénom Nom et Ville ne doivent contenir que des lettres.`;
+    }
+  
     console.log(saisie + "n'est pas valide");
     return valid; //NE MARCHE PAS...
-  } else {
+  }
+  else {
     console.log(saisie + " est valide");
     return valid;
   }
 }
 
 //FONCTION QUI POSTE UN OBJET CONTACT ET UN TABLEAU DE ID/QTE/COULEUR les 2 au format JSON(texte) A L API et recupere un numero de commande
-async function recupNcommande(objetAPI){
-    //creation des 2 objets à partir du LS
-// let pannierCommande = recupPanier(panier);
-// let contactCommande=recupPanier(contact);
-let maPromesse= await fetch("http://localhost:3000/api/order", {
+  function recupNcommande(objetAPI){
+   // creation des 2 objets à partir du LS
+let reponse=  fetch("http://localhost:3000/api/products/order", {
 	method: "POST",
 	headers: { 
-// 'Accept': 'application/json', 
+'Accept': 'application/json', 
 'Content-Type': 'application/json' 
 },
-	body: objetAPI
-});
-let reponse=await maPromesse.json;
-console.log(reponse);
+	body: JSON.stringify(objetAPI) 
+})
+.then(function(result){
+  if(result){
+    return result.json();
+  }
+})
+.then((reponseJson)=>{
+  console.log(reponseJson);//ok objet contact, orderId et tableaux de produits commandés
 
+console.log(reponseJson.orderId);
+})
+.catch(function(erreur) {
+console.log(erreur);
+});
+;
 }
