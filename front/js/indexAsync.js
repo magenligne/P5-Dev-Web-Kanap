@@ -1,6 +1,10 @@
+//L'utilisation de async(inutile pour "reponse" qui est une promesse et qui est donc déjà asynchrone) et de await permet au compilateur de continuer
+// à executer la suite du code JS même si ce qui est attendu par la fonction asynchrone n'est pas encore arrivé et de revenir executer la fonction
+//asynchrone lorsque ce qui est attendu sera arrivé.
+
 let reponse =await fetch("http://localhost:3000/api/products");
 
-
+//le resultat "reponse" d'une promesse étant une promesse, idem pour le resultat "listProductJson" de la preomesse "reponse":
 let listProductJson=await reponse.json();
     
   

@@ -1,8 +1,9 @@
+//LS:CETTE FONCTION SAUVE UN TABLEAU D'OBJETS {ID,QTE,COULEUR} DANS LE LS AU FORMAT TXT
 function savePanier(Panier) {
-  //Panier est un tableau d'objet JS au format txt ex: indice 0 {Id,qte,couleur}
+  //Panier est un tableau d'objet JS au format txt ex: indice: 0 valeur: {Id,qte,couleur}
   localStorage.setItem("monPanier", JSON.stringify(Panier)); //on sauve un Panier txt
 }
-//LS:CETTE FONCTION TRANSFORME LE PANIER ACTUEL EN TABLEAU D OBJET JS
+//LS:CETTE FONCTION EXTRAIT LE PANIER ACTUEL DU LOCALSTORAGE ET LE TRANSFORME EN TABLEAU D OBJET JSON
 export function recupPanier() {
   let panierRecup = localStorage.getItem("monPanier"); //panierRecup est un txt
   if (panierRecup == null) {
@@ -11,21 +12,25 @@ export function recupPanier() {
     return JSON.parse(panierRecup); //on recupere un tableau d'objet JSon ex: indice 0 {Id,qte,couleur}
   }
 }
-//LS:CETTE FONCTION AJOUTE L ARTICLE CLICKER DANS LE LS, SAUF S IL EXISTE DEJA, LA FONCTION MET A JOUR SA QUANTITE
+//LS:CETTE FONCTION AJOUTE L ARTICLE CLICKER DANS LE LS, SAUF S IL EXISTE DEJA, DANS CE CAS LA FONCTION MET A JOUR SA QUANTITE
 export function ajoutAuPanier({ id, qte, color }) {
   // 1 arg objet  avec 3 propriété
   // console.log(id);//ok
   let PanierA = recupPanier(); //on recupère le tableau  d'objets du panier [clé:0, valeur:{id:"id",qte:"quantité",color:"couleur"}] dans localStorage au format Json
+  console.log(PanierA);
   let memeProduit = PanierA.find((p) => p.id == id && p.color == color);
   if (memeProduit != undefined) {
     //on ajoute la quantite en arg de ajoutAuPanier à la qte initiale
     memeProduit.qte = parseInt(memeProduit.qte, 10) + parseInt(qte, 10);
+    //parseInt(string,10) transforme une string en nombre en base 10
   } else {
     PanierA.push({ id, qte, color });
   }
   savePanier(PanierA);
 }
-//DANS CETTE FONCTION, POUR CHAQUE OBJET DU PANIER, ON CREER UN ARTICLE DANS LE DOM POUR L AFFICHER, ON ECOUTE LE CLICK SUR SUPPRIMER ET LA MODIF DE QUANTITE ET ON LES GERE.
+
+//DANS CETTE FONCTION, POUR CHAQUE OBJET DU PANIER, ON CREER UN ARTICLE DANS LE DOM POUR L AFFICHER, ON ECOUTE LE CLICK SUR SUPPRIMER 
+//ET LA MODIF DE QUANTITE ET ON LES GERE en cas de click.
 function affichePanier() {
   let Panier = recupPanier();
   let prixTotal = 0;
@@ -79,7 +84,7 @@ function affichePanier() {
         document.querySelector("#totalPrice").innerText = prixTotal;
         // console.log(prixTotal);//ok
 
-        //---------------------------------------------------GESTION DES SUPPRESSIONS
+        //---------------------------------------------------ECOUTE ET GESTION DES SUPPRESSIONS
         let supprime = article.querySelector(".deleteItem");
         supprime.addEventListener(
           "click",
@@ -94,20 +99,40 @@ function affichePanier() {
           false
         );
 
-        //-----------------------------------------------------GESTION DES MODIF DE QUANTITE
+        //-----------------------------------------------------ECOUTE ET GESTION DES MODIF DE QUANTITE
         let quantite = article.querySelector(".itemQuantity");
         quantite.addEventListener(
           "change",
           (Event) => {
-            // console.log(Event.target.value);
+            console.log(Event.target.value);
             // console.log(qteTotale);
             if (Event.target.value >= 1) {
               //on modifie la quantité de l'article dans le panier
               modifierQtePanier(idQteColor, Event.target.value);
-              //on recharge la page pour mise à jour qte et prix total:
+              // //on recharge la page pour mise à jour qte et prix total:
               window.location = "cart.html";
+            //   if(Event.target.value>idQteColor.qte){
+            //   let difference = Event.target.value-parseInt(idQteColor.qte,10);
+            //   console.log(Event.target.value+"-"+parseInt(idQteColor.qte,10)+"="+difference);
+
+            //   qteTotale += difference;
+            //   document.querySelector("#totalQuantity").innerText = qteTotale;
+            //   prixTotal += ProductJson.price * difference;
+            //   document.querySelector("#totalPrice").innerText = prixTotal;
+
+            // }
+            //   else{
+            //     let difference = parseInt(idQteColor.qte,10)-Event.target.value;
+            //     console.log(parseInt(idQteColor.qte,10)+"-"+Event.target.value+"="+difference);
+  
+            //     qteTotale -= difference;
+            //     document.querySelector("#totalQuantity").innerText = qteTotale;
+            //     prixTotal -= ProductJson.price * difference;
+            //     document.querySelector("#totalPrice").innerText = prixTotal;    
+            //   }
+
             }
-            //si la quantité est nulle ou négative, on supprime l'article du DOM et du LS:
+            //si la quantité est nulle, on supprime l'article du DOM et du LS:
             else {
               article.remove();
               qteTotale -= parseInt(idQteColor.qte, 10);
