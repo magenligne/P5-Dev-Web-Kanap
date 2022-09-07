@@ -21,43 +21,55 @@ formulaire.addEventListener(
       //   validation(champ, champ.value);
 
       //si un champ est faux, on bloque la validation du formulaire:
-      if (validation(champ, champ.value) == false) {
+      if (validation(champ, champ.value) != true) {
         validForm = false;
+        // console.log(validForm);
+        return validForm;
       }
     });
     // console.log(valid);
+    console.log(validForm);
 
-    //---------------------------------------RECUPERATION DU FORMULAIRE DANS UN OBJET JSON SI LE FORMULAIRE EST VALIDE
-    if (validForm) {
-      //on cree un objet JSON vide:
-      let monContact = {};
-      //on le remplit avec les couples nom de champ/valeur saisie:
-      champs.forEach((champ) => {
-        //    monContact.push(champ.name,champ.value);
-        let nomChamp = champ.name;
-        // console.log(nomChamp);
-
-        let valeurSaisie = champ.value;
-        // console.log(valeurSaisie);
-
-        monContact[nomChamp] = valeurSaisie;
-      });
-      // console.log(monContact);//ok
-      //----------------------------RECUPERATION DU PANIER DU LS ET EXTRACTION DU TABLEAU D' ID CORRESPONDANTS
+    //----------------------------RECUPERATION DU PANIER DU LS ET EXTRACTION DU TABLEAU D' ID CORRESPONDANTS SI LE PANIER N'EST PAS VIDE
+    console.log(recupPanier().length);
+    if (recupPanier().length !== 0) {
       let listIDpanier = recupPanier().map((elementPanier) => {
         return elementPanier.id;
       });
       // console.log(listIDpanier);//ok
-      //------------------------------CREATION D'UN OBJET JSON COMPOSE DE L'OBJET CONTACT ET DU TABLEAU D'ID COMME ATTENDU PAR L'API
-      let objetAPI = {
-        contact: monContact,
-        products: listIDpanier,
-      };
-      //REQUETE API:
-      recupNcommande(objetAPI);
-    } else {
-      alert("Votre panier est vide");
+      //---------------------------------------RECUPERATION DU FORMULAIRE DANS UN OBJET JSON SI LE FORMULAIRE EST VALIDE
+      if (validForm) {
+        //on cree un objet JSON vide:
+        let monContact = {};
+        //on le remplit avec les couples nom de champ/valeur saisie:
+        champs.forEach((champ) => {
+          //    monContact.push(champ.name,champ.value);
+          let nomChamp = champ.name;
+          // console.log(nomChamp);
+
+          let valeurSaisie = champ.value;
+          // console.log(valeurSaisie);
+
+          monContact[nomChamp] = valeurSaisie;
+        });
+        // console.log(monContact);//ok
+
+        //------------------------------CREATION D'UN OBJET JSON COMPOSE DE L'OBJET CONTACT ET DU TABLEAU D'ID COMME ATTENDU PAR L'API
+        let objetAPI = {
+          contact: monContact,
+          products: listIDpanier,
+        };
+        console.log(objetAPI);
+        //REQUETE API:
+        // recupNcommande(objetAPI);
+      } else {
+        alert("Le formulaire est à compléter et/ou à corriger");
+      }
+    } 
+    else {
+      alert("Le panier est vide");
     }
+    
   },
   false
 );
@@ -95,8 +107,11 @@ async function validation(champ, saisie) {
     } else {
       messageErreur.innerHTML += `Les champs Prénom Nom et Ville ne doivent contenir que des lettres.`;
     }
-    return valid;//on renvoie valid en reponse de la fonction validation pour mettre à jour la variable validForm en début de code
-  } else {
+    // console.log(saisie + " n'est pas valide");
+
+    return valid; //on renvoie valid en reponse de la fonction validation pour mettre à jour la variable validForm en début de code
+  } 
+  else {
     // console.log(saisie + " est valide");
     return valid;
   }
