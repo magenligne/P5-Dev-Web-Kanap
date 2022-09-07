@@ -15,20 +15,22 @@ formulaire.addEventListener(
     //on recupère un tableau des champs du formulaire dont le renseignement est requis:
     let champs = document.querySelectorAll("input[required]");
     // console.log(champs);
-
+    console.log("validForm est " + validForm + " avant le forEach");
     champs.forEach((champ) => {
       // console.log(champ.name,champ.value);//ok
       //   validation(champ, champ.value);
 
       //si un champ est faux, on bloque la validation du formulaire:
-      if (validation(champ, champ.value) != true) {
-        validForm = false;
+      if (validation(champ, champ.value)) {
         // console.log(validForm);
+        return validForm;
+      } else {
+        validForm = false;
         return validForm;
       }
     });
     // console.log(valid);
-    console.log(validForm);
+    console.log("validForm est " + validForm + " après le forEach");
 
     //----------------------------RECUPERATION DU PANIER DU LS ET EXTRACTION DU TABLEAU D' ID CORRESPONDANTS SI LE PANIER N'EST PAS VIDE
     console.log(recupPanier().length);
@@ -60,16 +62,17 @@ formulaire.addEventListener(
           products: listIDpanier,
         };
         console.log(objetAPI);
-        //REQUETE API:
-        // recupNcommande(objetAPI);
+        //---------------------------REQUETE API=> obtention n° de commande et redirection page confirmation
+        recupNcommande(objetAPI);
+        //----------------------------on vide le panier LS et le panier affiché:
+        localStorage.clear();
+        document.querySelector("#cart__items").innerHTML = "";
       } else {
         alert("Le formulaire est à compléter et/ou à corriger");
       }
-    } 
-    else {
+    } else {
       alert("Le panier est vide");
     }
-    
   },
   false
 );
@@ -107,12 +110,12 @@ async function validation(champ, saisie) {
     } else {
       messageErreur.innerHTML += `Les champs Prénom Nom et Ville ne doivent contenir que des lettres.`;
     }
-    // console.log(saisie + " n'est pas valide");
+    console.log(saisie + " n'est pas valide");
 
     return valid; //on renvoie valid en reponse de la fonction validation pour mettre à jour la variable validForm en début de code
-  } 
-  else {
-    // console.log(saisie + " est valide");
+  } else {
+    messageErreur.innerHTML = "";
+    console.log(saisie + " est valide");
     return valid;
   }
 }
