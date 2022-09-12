@@ -18,15 +18,13 @@ formulaire.addEventListener(
     console.log("validForm est " + validForm + " avant le forEach");
     champs.forEach((champ) => {
       // console.log(champ.name,champ.value);//ok
-      //   validation(champ, champ.value);
+       let resultatValidChamp= validation(champ, champ.value);
+       console.log(resultatValidChamp);
 
       //si un champ est faux, on bloque la validation du formulaire:
-      if (validation(champ, champ.value)) {
-        // console.log(validForm);
-        return validForm;
-      } else {
+      if (!resultatValidChamp) {
+        
         validForm = false;
-        return validForm;
       }
     });
     // console.log(valid);
@@ -63,10 +61,18 @@ formulaire.addEventListener(
         };
         console.log(objetAPI);
         //---------------------------REQUETE API=> obtention n° de commande et redirection page confirmation
-        recupNcommande(objetAPI);
-        //----------------------------on vide le panier LS et le panier affiché:
-        localStorage.clear();
-        document.querySelector("#cart__items").innerHTML = "";
+        recupNcommande(objetAPI).then((reponseJson) => {
+          let numDeCommande = reponseJson.orderId;
+          //on utilise le format d'URL vu pour l'affichage d'une page produit "URL?clé=valeur":
+          window.location = "confirmation.html?NDC=" + numDeCommande;
+          // console.log(numDeCommande);//ok
+          
+          //----------------------------on vide le panier LS et le panier affiché:
+          localStorage.clear();
+          document.querySelector("#cart__items").innerHTML = "";
+          
+        })
+    
       } else {
         alert("Le formulaire est à compléter et/ou à corriger");
       }
@@ -79,7 +85,7 @@ formulaire.addEventListener(
 
 //CETTE FONCTION TESTE UN CHAMP.ELLE APPLIQUE LA REGEX SPECIALE SELON LE TYPE DE CHAMP ET RETOURNE TRUE OU FALSE SELON LA VALIDITE DU CHAMP TESTE
 //ELLE AFFICHE AUSSI UN MESSAGE D ERREUR SI LE CHAMP EST FAUX.
-async function validation(champ, saisie) {
+ function validation(champ, saisie) {
   let valid; //deviendra faux si un champ est faux
   // console.log(champ);
   // console.log(champ.type);
@@ -122,7 +128,7 @@ async function validation(champ, saisie) {
 
 //FONCTION QUI POSTE UN OBJET JSON CONTACT ET UN TABLEAU D'ID  A L API et recupere un numero de commande
 function recupNcommande(objetAPI) {
-  let reponse = fetch("http://localhost:3000/api/products/order", {
+  return fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -131,18 +137,14 @@ function recupNcommande(objetAPI) {
     body: JSON.stringify(objetAPI),
   })
     .then(function (result) {
-      if (result) {
+      if (result.ok) {
+        console.log(result.ok);
         return result.json();
       }
+      throw Error("Erreur de l'API");
     })
-    .then((reponseJson) => {
-      // console.log(reponseJson);//ok objet contact, orderId et tableaux de produits commandés
-      let numDeCommande = reponseJson.orderId;
-      //on utilise le format d'URL vu pour l'affichage d'une page produit "URL?clé=valeur":
-      window.location = "confirmation.html?NDC=" + numDeCommande;
-      // console.log(numDeCommande);//ok
-    })
+
     .catch(function (erreur) {
-      console.log(erreur);
+      alert(erreur.message);
     });
 }

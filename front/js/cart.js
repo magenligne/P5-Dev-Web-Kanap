@@ -106,7 +106,7 @@ function affichePanier() {
           (Event) => {
             console.log(Event.target.value);
             // console.log(qteTotale);
-            if (Event.target.value >= 1) {
+            if (Event.target.value >= 1 && Event.target.value < 101) {
               //on modifie la quantité de l'article dans le panier
               modifierQtePanier(idQteColor, Event.target.value);
               // //on recharge la page pour mise à jour qte et prix total:
@@ -133,14 +133,18 @@ function affichePanier() {
 
             }
             //si la quantité est nulle, on supprime l'article du DOM et du LS:
-            else {
-              article.remove();
-              qteTotale -= parseInt(idQteColor.qte, 10);
-              document.querySelector("#totalQuantity").innerText = qteTotale;
-              prixTotal -= ProductJson.price * parseInt(idQteColor.qte, 10);
-              document.querySelector("#totalPrice").innerText = prixTotal;
+            // else if(Event.target.value == 0){
+            //   article.remove();
+            //   qteTotale -= parseInt(idQteColor.qte, 10);
+            //   document.querySelector("#totalQuantity").innerText = qteTotale;
+            //   prixTotal -= ProductJson.price * parseInt(idQteColor.qte, 10);
+            //   document.querySelector("#totalPrice").innerText = prixTotal;
 
-              supprimeLigne(idQteColor);
+            //   supprimeLigne(idQteColor);
+            // }
+            else{
+              alert("La quantité doit être un nombre entre 1 et 100.");
+              // Event.target.value=0;
             }
           },
           false
@@ -176,5 +180,9 @@ function modifierQtePanier(idQteColor, newQte) {
   savePanier(Panier);
   console.log(Panier);
 }
-
-window.addEventListener("load", affichePanier()); //on appelle la fonction à s'exécuter au chargement de la page panier
+window.addEventListener("load",()=>{
+console.log(window.location);
+if(window.location == "http://127.0.0.1:5500/front/html/cart.html"){
+affichePanier(); //on appelle la fonction à s'exécuter au chargement de la page panier
+}
+});
