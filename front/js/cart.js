@@ -89,11 +89,13 @@ function affichePanier() {
         supprime.addEventListener(
           "click",
           () => {
+            //suppression dans le DOM:
             article.remove();
             qteTotale -= parseInt(idQteColor.qte, 10);
             document.querySelector("#totalQuantity").innerText = qteTotale;
             prixTotal -= ProductJson.price * parseInt(idQteColor.qte, 10);
             document.querySelector("#totalPrice").innerText = prixTotal;
+            //suppression dans le LS:
             supprimeLigne(idQteColor);
           },
           false
@@ -104,47 +106,18 @@ function affichePanier() {
         quantite.addEventListener(
           "change",
           (Event) => {
-            console.log(Event.target.value);
+            // console.log(Event.target.value);
             // console.log(qteTotale);
             if (Event.target.value >= 1 && Event.target.value < 101) {
               //on modifie la quantité de l'article dans le panier
+              
               modifierQtePanier(idQteColor, Event.target.value);
               // //on recharge la page pour mise à jour qte et prix total:
-              window.location = "cart.html";
-            //   if(Event.target.value>idQteColor.qte){
-            //   let difference = Event.target.value-parseInt(idQteColor.qte,10);
-            //   console.log(Event.target.value+"-"+parseInt(idQteColor.qte,10)+"="+difference);
-
-            //   qteTotale += difference;
-            //   document.querySelector("#totalQuantity").innerText = qteTotale;
-            //   prixTotal += ProductJson.price * difference;
-            //   document.querySelector("#totalPrice").innerText = prixTotal;
-
-            // }
-            //   else{
-            //     let difference = parseInt(idQteColor.qte,10)-Event.target.value;
-            //     console.log(parseInt(idQteColor.qte,10)+"-"+Event.target.value+"="+difference);
-  
-            //     qteTotale -= difference;
-            //     document.querySelector("#totalQuantity").innerText = qteTotale;
-            //     prixTotal -= ProductJson.price * difference;
-            //     document.querySelector("#totalPrice").innerText = prixTotal;    
-            //   }
+              // window.location = "cart.html";
 
             }
-            //si la quantité est nulle, on supprime l'article du DOM et du LS:
-            // else if(Event.target.value == 0){
-            //   article.remove();
-            //   qteTotale -= parseInt(idQteColor.qte, 10);
-            //   document.querySelector("#totalQuantity").innerText = qteTotale;
-            //   prixTotal -= ProductJson.price * parseInt(idQteColor.qte, 10);
-            //   document.querySelector("#totalPrice").innerText = prixTotal;
-
-            //   supprimeLigne(idQteColor);
-            // }
             else{
               alert("La quantité doit être un nombre entre 1 et 100.");
-              // Event.target.value=0;
             }
           },
           false
@@ -170,15 +143,36 @@ function supprimeLigne(idQteColor) {
 
 //LS:CETTE FONCTION TROUVE LA LIGNE A MODIFIER DU LS ET REMPLACE SA QUANTITE PAR LA NOUVELLE
 function modifierQtePanier(idQteColor, newQte) {
+
   let Panier = recupPanier();
   let articleQuiChange = Panier.find(
     (iqc) => iqc.id == idQteColor.id && iqc.color == idQteColor.color
   );
+  let vieilleQte=articleQuiChange.qte;
   articleQuiChange.qte = newQte;
-  // console.log(idQteColor.qte);
-  // console.log(newQte);
+
+  let prixTotal=document.querySelector("#totalPrice");
+  // console.log("selecteur prix total: ",prixTotal);
+  // console.log("prix total précédent: ",prixTotal.innerText);
+
+  
+  // console.log("vieille qte: ",vieilleQte);
+  // console.log("new qte: ",newQte);
   savePanier(Panier);
-  console.log(Panier);
+  // console.log(Panier);
+  let qteTotale=document.querySelector("#totalQuantity");
+  // console.log("qte totale innertext avant calcul: ",qteTotale.innerText);
+  qteTotale.innerText= parseInt(qteTotale.innerText) - parseInt(vieilleQte) + parseInt(newQte);
+  console.log("qte totale innertext: ",qteTotale.innerText);
+
+
+  // console.log(document.querySelector(".cart__item__content__description p"));
+  // console.log(document.querySelector(".cart__item__content__description p").nextElementSibling.innerText);
+  let prixUnitaire=parseInt(document.querySelector(".cart__item__content__description p").nextElementSibling.innerText);
+
+  prixTotal.innerText=parseInt(prixTotal.innerText)-(parseInt(vieilleQte)*prixUnitaire)+(parseInt(newQte)*prixUnitaire);
+  // console.log("prix total: ",prixTotal.innerText);
+
 }
 window.addEventListener("load",()=>{
 console.log(window.location);
