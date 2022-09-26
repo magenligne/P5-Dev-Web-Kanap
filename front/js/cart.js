@@ -1,6 +1,6 @@
 //LS:CETTE FONCTION SAUVE UN TABLEAU D'OBJETS {ID,QTE,COULEUR} DANS LE LS AU FORMAT TXT
 function savePanier(Panier) {
-  //Panier est un tableau d'objet JS au format txt ex: indice: 0 valeur: {Id,qte,couleur}
+  //Panier est un tableau d'objet JSON indice: 0 valeur: {Id,qte,couleur}
   localStorage.setItem("monPanier", JSON.stringify(Panier)); //on sauve un Panier txt
 }
 //LS:CETTE FONCTION EXTRAIT LE PANIER ACTUEL DU LOCALSTORAGE ET LE TRANSFORME EN TABLEAU D OBJET JSON
@@ -22,7 +22,7 @@ export function ajoutAuPanier({ id, qte, color }) {
   if (memeProduit != undefined) {
     //on ajoute la quantite en arg de ajoutAuPanier à la qte initiale
     memeProduit.qte = parseInt(memeProduit.qte, 10) + parseInt(qte, 10);
-    //parseInt(string,10) transforme une string en nombre en base 10
+    //parseInt(string,10) transforme une string en nombre en base 10 (base 10 par défaut, pas obligé de le mettre)
   } else {
     PanierA.push({ id, qte, color });
   }
@@ -48,7 +48,7 @@ function affichePanier() {
         }
       })
       .then((ProductJson) => {
-        //---------------------------------------------------------CREATION D UN ARTICLE DOM (AFFICHAGE)
+        //-----------------------------------------------CREATION D UN ARTICLE DOM (AFFICHAGE)
         let article = document.createElement("article");
         article.setAttribute("class", "cart__item");
         article.setAttribute("data-id", idQteColor.id);
@@ -106,15 +106,8 @@ function affichePanier() {
         quantite.addEventListener(
           "change",
           (Event) => {
-            // console.log(Event.target.value);
-            // console.log(qteTotale);
             if (Event.target.value >= 1 && Event.target.value < 101) {
-              //on modifie la quantité de l'article dans le panier
-              
               modifierQtePanier(idQteColor, Event.target.value);
-              // //on recharge la page pour mise à jour qte et prix total:
-              // window.location = "cart.html";
-
             }
             else{
               alert("La quantité doit être un nombre entre 1 et 100.");
@@ -141,16 +134,14 @@ function supprimeLigne(idQteColor) {
   savePanier(Panier);
 }
 
-//LS:CETTE FONCTION TROUVE LA LIGNE A MODIFIER DU LS ET REMPLACE SA QUANTITE PAR LA NOUVELLE
+//LS:CETTE FONCTION TROUVE LA LIGNE A MODIFIER DU LS ET REMPLACE SA QUANTITE PAR LA NOUVELLE et met à jour qte et prix total dans le DOM
 function modifierQtePanier(idQteColor, newQte) {
-
   let Panier = recupPanier();
   let articleQuiChange = Panier.find(
     (iqc) => iqc.id == idQteColor.id && iqc.color == idQteColor.color
   );
   let vieilleQte=articleQuiChange.qte;
   articleQuiChange.qte = newQte;
-
   let prixTotal=document.querySelector("#totalPrice");
   // console.log("selecteur prix total: ",prixTotal);
   // console.log("prix total précédent: ",prixTotal.innerText);
@@ -164,16 +155,13 @@ function modifierQtePanier(idQteColor, newQte) {
   // console.log("qte totale innertext avant calcul: ",qteTotale.innerText);
   qteTotale.innerText= parseInt(qteTotale.innerText) - parseInt(vieilleQte) + parseInt(newQte);
   console.log("qte totale innertext: ",qteTotale.innerText);
-
-
   // console.log(document.querySelector(".cart__item__content__description p"));
   // console.log(document.querySelector(".cart__item__content__description p").nextElementSibling.innerText);
   let prixUnitaire=parseInt(document.querySelector(".cart__item__content__description p").nextElementSibling.innerText);
-
   prixTotal.innerText=parseInt(prixTotal.innerText)-(parseInt(vieilleQte)*prixUnitaire)+(parseInt(newQte)*prixUnitaire);
   // console.log("prix total: ",prixTotal.innerText);
-
 }
+
 window.addEventListener("load",()=>{
 console.log(window.location);
 if(window.location == "http://127.0.0.1:5500/front/html/cart.html"){

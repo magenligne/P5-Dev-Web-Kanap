@@ -3,18 +3,16 @@
 //  pour les afficher dans la page d'acceuil (via Style.css).
 
 // D'abord, on récupère la liste de données de l'api au format json en faisant 1 requete grace à fetch (fonction asynchrone),
-// et le résultat de cette requette on la met dans une variable "myPromise" pour l'utiliser comme promesse car fetch renvoie tjrs une promesse.
+// et le résultat de cette requette est mise dans une variable "myPromise" pour l'utiliser comme promesse car fetch renvoie tjrs une promesse.
 let myPromise = fetch("http://localhost:3000/api/products");
 
 
 myPromise
   .then(function (result) {
     // à l'endroit de result se trouve le résultat de la promesse
-    // (ici de notre fetch) au format ?? . Pour l'utiliser en JS,
     // il faut convertir ce résultat au format JSON en faisant result.json(), si le result existe .
 
     if (result) {
-      // console.log(coucou);//ko pourquoi?
       return result.json();
     }
   })
@@ -27,6 +25,7 @@ myPromise
       // Pour chaque objet json de la liste on crée un objet js canape rempli à l'aide du constructeur canape() définit dans canape.js
       let canapeLocal = new canape(ProductJson);
       // console.log(canapeLocal);
+      
       // document.querySelector(".items") récupère dans le dom le contenu de la classe "items".
       // ensuite avec la méthode .innerHTML on remplace ce contenu html par ce qui suit le =.
       // enfin grâce au += on concatène ce qui suit avec ce qui existe déjà au lieu de le remplacer.
