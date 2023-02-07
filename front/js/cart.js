@@ -29,7 +29,7 @@ export function ajoutAuPanier({ id, qte, color }) {
   savePanier(PanierA);
 }
 
-//DANS CETTE FONCTION, POUR CHAQUE OBJET DU PANIER, ON CREER UN ARTICLE DANS LE DOM POUR L AFFICHER, ON ECOUTE LE CLICK SUR SUPPRIMER 
+//DANS CETTE FONCTION, POUR CHAQUE OBJET DU PANIER, ON CREER UN ARTICLE DANS LE DOM POUR L AFFICHER, ON ECOUTE LE CLICK SUR SUPPRIMER
 //ET LA MODIF DE QUANTITE ET ON LES GERE en cas de click.
 function affichePanier() {
   let Panier = recupPanier();
@@ -74,7 +74,7 @@ function affichePanier() {
        </div> `;
         document.querySelector("#cart__items").appendChild(article);
 
-//------------------------------------------------------------CALCUL QUANTITE TOTALE ET PRIX TOTAL
+        //------------------------------------------------------------CALCUL QUANTITE TOTALE ET PRIX TOTAL
         qteTotale += parseInt(idQteColor.qte, 10);
 
         // console.log(qteTotale) ;
@@ -108,8 +108,7 @@ function affichePanier() {
           (Event) => {
             if (Event.target.value >= 1 && Event.target.value < 101) {
               modifierQtePanier(idQteColor, Event.target.value);
-            }
-            else{
+            } else {
               alert("La quantité doit être un nombre entre 1 et 100.");
             }
           },
@@ -128,7 +127,7 @@ function supprimeLigne(idQteColor) {
   let Panier = recupPanier();
   let indexPanier = Panier.findIndex((iqc) => iqc === idQteColor);
 
-  console.log(indexPanier);//index négatif??
+  console.log(indexPanier); //index négatif??
   Panier.splice(indexPanier, 1);
   console.log(Panier);
   savePanier(Panier);
@@ -140,31 +139,37 @@ function modifierQtePanier(idQteColor, newQte) {
   let articleQuiChange = Panier.find(
     (iqc) => iqc.id == idQteColor.id && iqc.color == idQteColor.color
   );
-  let vieilleQte=articleQuiChange.qte;
+  let vieilleQte = articleQuiChange.qte;
   articleQuiChange.qte = newQte;
-  let prixTotal=document.querySelector("#totalPrice");
+  let prixTotal = document.querySelector("#totalPrice");
   // console.log("selecteur prix total: ",prixTotal);
   // console.log("prix total précédent: ",prixTotal.innerText);
 
-  
   // console.log("vieille qte: ",vieilleQte);
   // console.log("new qte: ",newQte);
   savePanier(Panier);
   // console.log(Panier);
-  let qteTotale=document.querySelector("#totalQuantity");
+  let qteTotale = document.querySelector("#totalQuantity");
   // console.log("qte totale innertext avant calcul: ",qteTotale.innerText);
-  qteTotale.innerText= parseInt(qteTotale.innerText) - parseInt(vieilleQte) + parseInt(newQte);
-  console.log("qte totale innertext: ",qteTotale.innerText);
+  qteTotale.innerText =
+    parseInt(qteTotale.innerText) - parseInt(vieilleQte) + parseInt(newQte);
+  console.log("qte totale innertext: ", qteTotale.innerText);
   // console.log(document.querySelector(".cart__item__content__description p"));
   // console.log(document.querySelector(".cart__item__content__description p").nextElementSibling.innerText);
-  let prixUnitaire=parseInt(document.querySelector(".cart__item__content__description p").nextElementSibling.innerText);
-  prixTotal.innerText=parseInt(prixTotal.innerText)-(parseInt(vieilleQte)*prixUnitaire)+(parseInt(newQte)*prixUnitaire);
+  let prixUnitaire = parseInt(
+    document.querySelector(".cart__item__content__description p")
+      .nextElementSibling.innerText
+  );
+  prixTotal.innerText =
+    parseInt(prixTotal.innerText) -
+    parseInt(vieilleQte) * prixUnitaire +
+    parseInt(newQte) * prixUnitaire;
   // console.log("prix total: ",prixTotal.innerText);
 }
 
-window.addEventListener("load",()=>{
-console.log(window.location);
-if(window.location == "http://127.0.0.1:5500/front/html/cart.html"){
-affichePanier(); //on appelle la fonction à s'exécuter au chargement de la page panier
-}
+window.addEventListener("load", () => {
+  // console.log(window.location);
+  // if (window.location == "http://127.0.0.1:5500/front/html/cart.html") {
+  affichePanier(); //on appelle la fonction à s'exécuter au chargement de la page panier
+  // }
 });
